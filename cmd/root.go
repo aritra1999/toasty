@@ -2,7 +2,9 @@ package cmd
 
 import (
 	"log"
+	"toasty/api/ping"
 
+	"github.com/gin-gonic/gin"
 	"github.com/spf13/cobra"
 )
 
@@ -19,6 +21,15 @@ func Cmd() {
 
 func run() func(cmd *cobra.Command, args []string) {
 	return func(cmd *cobra.Command, args []string) {
-		log.Println("Running server")
+		initGinServer()
 	}
+}
+
+func initGinServer() {
+	r := gin.Default()
+	r.SetTrustedProxies(nil)
+
+	r.GET("/ping", ping.Ping)
+
+	r.Run("localhost:8080")
 }
