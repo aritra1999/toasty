@@ -1,7 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"toasty/cmd"
+)
 
 func main() {
-	fmt.Println("Hello World")
+	cmd.Cmd()
 }
