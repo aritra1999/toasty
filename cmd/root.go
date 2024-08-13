@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"log"
+	"toasty/api/execute"
 	"toasty/api/ping"
 
 	"github.com/gin-gonic/gin"
@@ -29,7 +30,9 @@ func initGinServer() {
 	r := gin.Default()
 	r.SetTrustedProxies(nil)
 
-	r.GET("/ping", ping.Ping)
+	api := r.Group("/api")
+	api.GET("/ping", ping.Ping)
+	api.POST("/execute", execute.Execute)
 
 	r.Run("localhost:8080")
 }
