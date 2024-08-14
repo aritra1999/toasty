@@ -8,7 +8,7 @@ import (
 )
 
 type ExecuteRequestBody struct {
-	Context   []string `json:"context" binding:"required"`
+	Contexts  []string `json:"contexts" binding:"required"`
 	Namespace string   `json:"namespace" binding:"required"`
 	Query     string   `json:"query" binding:"required"`
 }
