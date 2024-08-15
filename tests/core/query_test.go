@@ -23,7 +23,6 @@ func TestExecuteQuery(t *testing.T) {
 				expected := "2"
 
 				assert.Equal(t, expected, result, "should be able to execute queries on the given container")
-				assert.Equal(t, nil, nil, "error should be nil")
 			}
 		})
 	})
