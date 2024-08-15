@@ -1,6 +1,13 @@
 package core
 
-import "log"
+import (
+	"database/sql"
+	"fmt"
+	"log"
+	"strconv"
+
+	_ "github.com/lib/pq"
+)
 
 type ConnectionConfig struct {
 	Host     string
@@ -10,11 +17,34 @@ type ConnectionConfig struct {
 	Database string
 }
 
-func ProcessQuery(configs []ConnectionConfig, query string) {
+func ProcessQuery(configs []ConnectionConfig, query string) {}
 
-}
+func ExecuteQuery(config ConnectionConfig, query string) ([]interface{}, error) {
+	connStr := fmt.Sprintf("user=%s dbname=%s password=%s host=%s port=%s sslmode=disable", config.Username, config.Database, config.Password, config.Host, strconv.Itoa(config.Port))
 
-func ExecuteQuery(config ConnectionConfig, query string) (interface{}, error) {
-	log.Printf("Executing query: %s on database: %s:%v with user: %s and password: %s", query, config.Host, config.Port, config.Username, config.Password)
-	return nil, nil
+	db, err := sql.Open("postgres", connStr)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer db.Close()
+
+	rows, err := db.Query(query)
+	if err != nil {
+		log.Fatal(err)
+		return nil, err
+	}
+	defer rows.Close()
+
+	var result []interface{}
+
+	for rows.Next() {
+		var now string
+		err = rows.Scan(&now)
+		if err != nil {
+			log.Fatal(err)
+		}
+		result = append(result, now)
+	}
+
+	return result, nil
 }

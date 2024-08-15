@@ -5,17 +5,27 @@ import (
 	"toasty/core"
 	"toasty/tests"
 
+	. "github.com/franela/goblin"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestExecuteQuery(t *testing.T) {
-	containerMetas := tests.Setup(t, 5)
-	//TODO: This part will be replaced with the actual tests and assertions later
-	for _, containerMeta := range containerMetas {
-		result, err := core.ExecuteQuery(containerMeta.Config, "SELECT * FROM users")
-		assert.Equal(t, nil, err, "error should be nil")
-		assert.Equal(t, nil, result, "result should be nil")
-	}
+	var containerMetas []tests.PostgresContainerMeta = tests.Setup(t, 1)
+
+	g := Goblin(t)
+
+	g.Describe("ExecuteQuery", func() {
+		g.It("should connect to all given postgres database configs and execute the given query", func() {
+			for _, containerMeta := range containerMetas {
+				response, _ := core.ExecuteQuery(containerMeta.Config, "SELECT 1 + 1")
+
+				result := response[0]
+				expected := "2"
+
+				assert.Equal(t, expected, result, "should be able to execute queries on the given container")
+			}
+		})
+	})
 
 	tests.Teardown(containerMetas)
 }
